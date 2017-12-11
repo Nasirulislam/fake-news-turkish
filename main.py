@@ -9,6 +9,10 @@ import sklearn
 import pytest
 import snowballstemmer
 from nltk.tokenize import RegexpTokenizer
+from Utils.StopWords import StopWords
+
+stop_word = StopWords()
+
 
 def read_file_xlsx(file_path):
     # check that the file is indeed an excel file
@@ -20,6 +24,7 @@ def read_file_xlsx(file_path):
 def stem_turkish_text(stemmer, text):
     text = text.lower()
     tokenized = RegexpTokenizer(r"\w+").tokenize(text)
+    tokenized = stop_word.remove_stop_words(tokenized)
     return u" ".join(stemmer.stemWords(tokenized))
 
 
@@ -48,6 +53,19 @@ def transform_df(df):
     stemmer = snowballstemmer.TurkishStemmer()
     df["NewsTitle"] = df["NewsTitle"].apply(lambda t: stem_turkish_text(stemmer, t))
     return df
+
+
+def to_features(df, feature):
+    """
+    Convert the df to features..
+    NewsTitle and News to either n-gram or TF-IDF
+    :param feature: Either 'ngram' or 'tfidf'. For now, ngram corresponds to bigram
+    :param df:
+    :return:
+    """
+
+    pass
+
 
 if __name__ == "__main__":
     df = read_file_xlsx("TDFFN.xlsx")
