@@ -5,7 +5,7 @@ Fake news detector for Turkish language
 from urlparse import urlparse
 
 import pandas as pd
-import sklearn
+from sklearn.feature_extraction.text import CountVectorizer
 import pytest
 import snowballstemmer
 from nltk.tokenize import RegexpTokenizer
@@ -63,11 +63,16 @@ def to_features(df, feature):
     :param df:
     :return:
     """
+    # first retrieve the corpus
+    corpus=list(df["NewsTitle"].str.split()) + list(df["News"].str.split())
+    corpus = reduce(list.__add__, corpus)
+    model = CountVectorizer().fit(corpus)
+    return model.transform(df["NewsTitle"])
 
-    pass
 
 
 if __name__ == "__main__":
     df = read_file_xlsx("TDFFN.xlsx")
-    df = transform_df(df)
-    print df.head(10)
+    print to_features(df, "")
+    # df = transform_df(df)
+    # print df.head(10)
