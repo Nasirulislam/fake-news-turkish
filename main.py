@@ -10,7 +10,6 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.grid_search import GridSearchCV
 from sklearn.preprocessing import normalize
 from sklearn.svm import SVC
-import pytest
 import snowballstemmer
 from nltk.tokenize import RegexpTokenizer
 from Utils.StopWords import StopWords
