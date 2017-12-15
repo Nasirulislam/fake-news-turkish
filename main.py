@@ -11,10 +11,6 @@ from sklearn.grid_search import GridSearchCV
 from sklearn.preprocessing import normalize
 from sklearn.svm import SVC
 import snowballstemmer
-from nltk.tokenize import RegexpTokenizer
-from Utils.StopWords import StopWords
-
-stop_word = StopWords()
 
 
 def read_file_xlsx(file_path):
@@ -27,11 +23,7 @@ def read_file_csv(file_path):
     return pd.read_csv(file_path, index_col=0, encoding="utf-8")
 
 
-def stem_turkish_text(stemmer, text):
-    text = text.lower()
-    tokenized = RegexpTokenizer(r"\w+").tokenize(text)
-    tokenized = stop_word.remove_stop_words(tokenized)
-    return u" ".join(stemmer.stemWords(tokenized))
+
 
 
 def transform_df(df):
