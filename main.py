@@ -12,6 +12,9 @@ from sklearn.preprocessing import normalize
 from sklearn.svm import SVC
 import snowballstemmer
 
+from Training.FakeNews import *
+from Utils.PreProcessor import stem_turkish_text
+
 
 def read_file_xlsx(file_path):
     # check that the file is indeed an excel file
@@ -62,7 +65,7 @@ def to_features(df, feature):
     :return:
     """
     # first retrieve the corpus
-    corpus=list(df["NewsTitle"].str.split()) + list(df["News"].str.split())
+    corpus = list(df["NewsTitle"].str.split()) + list(df["News"].str.split())
     corpus = reduce(list.__add__, corpus)
     vectorizer = CountVectorizer().fit(corpus)
     news_title_sparse = vectorizer.transform(df["NewsTitle"])
@@ -73,6 +76,12 @@ def to_features(df, feature):
 
 if __name__ == "__main__":
     df = read_file_csv("TDFFN.csv")
+
+    classifier = TurkishFakeNewsClassifier(["NewsDate", "Url", "NewsTitle", "News", "Value"])
+    fitted = classifier.fit(df)
+
+    exit()
+
     df = transform_df(df)
     X =  to_features(df, "")
     pca = TruncatedSVD(20, n_iter=10).fit(X)

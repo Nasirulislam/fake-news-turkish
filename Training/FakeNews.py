@@ -1,9 +1,12 @@
 import snowballstemmer
+from sklearn.decomposition import TruncatedSVD
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
 import pandas as pd
 from Utils.PreProcessor import TurkishPreprocessor
+from Utils.Vectorizer import TurkishVectorizer
 
 FEATURES_TERM_FREQUENCY = "term frequency"
 FEATURES_TFIDF = "tfidf"
@@ -56,9 +59,8 @@ class TurkishFakeNewsClassifier:
     def fit(self, X):
         # Extract columns
         col = self.transform_column(X)
-        features = self.extract_features(col)
-        pipeline = self.get_pipeline()
-
+        self.pipeline = self.get_pipeline()
+        return self.pipeline.fit(col)
 
     def transform(self, X):
         pass
@@ -95,9 +97,13 @@ class TurkishFakeNewsClassifier:
         """
         steps = [
             # first the pre-processor
-            TurkishPreprocessor(self.stemmer_name_to_method[self.stemmer_method]),
-            self.model_name_to_class[self.model]
+            ("preprocessor", TurkishPreprocessor(self.stemmer_name_to_method[self.stemmer_method])),
+            ("vectorizer", TurkishVectorizer(self.feature_name_to_class[self.feature])),
+            # use pca
+            ("pca", TruncatedSVD(20, n_iter=10)),
+            ("model", self.model_name_to_class[self.model])
         ]
+        return Pipeline(steps)
 
 
 
