@@ -15,9 +15,9 @@ class TurkishPreprocessor:
 
     def fit(self, X, y=None):
         # no state or model to train here, so simply return this same class
-        return X
+        return self
 
     def transform(self, df, y=None):
         df["NewsTitle"] = df["NewsTitle"].apply(lambda t: stem_turkish_text(self.stemmer, t))
         df["News"] = df["News"].apply(lambda t: stem_turkish_text(self.stemmer, t))
-        return self
+        return df

@@ -8,7 +8,8 @@ class TurkishVectorizer:
     def fit(self, df, y=None):
         corpus = list(df["NewsTitle"].str.split()) + list(df["News"].str.split())
         corpus = reduce(list.__add__, corpus)
-        return self.vectorizer.fit_transform(corpus)
+        self.vectorizer.fit(corpus)
+        return self
 
     def transform(self, df, y=None):
         news_title_sparse = self.vectorizer.transform(df["NewsTitle"])
