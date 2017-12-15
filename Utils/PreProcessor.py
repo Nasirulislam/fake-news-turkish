@@ -1,4 +1,5 @@
 from nltk import RegexpTokenizer
+from sklearn.base import BaseEstimator
 from Utils.StopWords import StopWords
 
 stop_word = StopWords()
@@ -9,7 +10,7 @@ def stem_turkish_text(stemmer, text):
     tokenized = stop_word.remove_stop_words(tokenized)
     return u" ".join(stemmer.stemWords(tokenized))
 
-class TurkishPreprocessor:
+class TurkishPreprocessor(BaseEstimator):
     def __init__(self, stemmer):
         self.stemmer = stemmer
 
@@ -21,3 +22,9 @@ class TurkishPreprocessor:
         df["NewsTitle"] = df["NewsTitle"].apply(lambda t: stem_turkish_text(self.stemmer, t))
         df["News"] = df["News"].apply(lambda t: stem_turkish_text(self.stemmer, t))
         return df
+
+    def get_params(self, deep=True):
+        return {"stemmer": self.stemmer}
+
+    def set_params(self, **params):
+        self.stemmer = params.get("stemmer", self.stemmer)

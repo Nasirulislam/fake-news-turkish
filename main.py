@@ -27,8 +27,6 @@ def read_file_csv(file_path):
 
 
 
-
-
 def transform_df(df):
     """
     Takes input a pandas data frame and returns a pre-processed data frame to be used for feature extraction.
@@ -78,8 +76,7 @@ if __name__ == "__main__":
     df = read_file_csv("TDFFN.csv")
 
     classifier = TurkishFakeNewsClassifier(["NewsDate", "Url", "NewsTitle", "News", "Value"])
-    fitted = classifier.fit(df)
-
+    fitted = classifier.select_best_model(df)
     exit()
 
     df = transform_df(df)
@@ -89,21 +86,3 @@ if __name__ == "__main__":
     X = normalize(pca.transform(X))
     # exit()
     # train
-
-    # Set the parameters by cross-validation
-    tuned_parameters = [{'kernel': ['rbf', 'linear'], 'gamma': [1e-3, 1e-4],
-                         'C': [1, 10, 100, 1000]},
-                        {'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
-
-    scores = ['precision', 'recall']
-
-    clf = GridSearchCV(SVC(), tuned_parameters, cv=5,
-                           scoring='%s_macro' % 'recall')
-    Y = df["Value"].values
-    clf.fit(X, Y)
-    print clf.best_params_
-    print
-    print "Grid scores on development set:"
-    print
-    print clf.best_estimator_
-    print clf.best_score_

@@ -2,6 +2,7 @@ import snowballstemmer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
 import pandas as pd
@@ -100,10 +101,45 @@ class TurkishFakeNewsClassifier:
             ("preprocessor", TurkishPreprocessor(self.stemmer_name_to_method[self.stemmer_method])),
             ("vectorizer", TurkishVectorizer(self.feature_name_to_class[self.feature])),
             # use pca
-            ("pca", TruncatedSVD(20, n_iter=10)),
+            ("pca", TruncatedSVD(n_iter=10)),
             ("model", self.model_name_to_class[self.model])
         ]
         return Pipeline(steps)
+
+    def select_best_model(self, df):
+        """
+        Select the best model by using grid search method.
+        :return:
+        """
+        params = {
+            # check whether unigrams give good results or bigrams.
+            "vectorizer__vectorizer": [self.feature_name_to_class[self.feature]],
+            "vectorizer__ngram_range": [(1,1), (2,2)],
+            # check pca parameters
+            "pca__n_components": [20, 25, 30, 50],
+            # stemmer to use for preprocessing
+            "preprocessor__stemmer": [self.stemmer_name_to_method[self.stemmer_method]]
+
+        }
+        # select the tunable parameters according to the model
+        if self.model == MODELS_SVM:
+            params.update({
+                'model__kernel': ['rbf', 'linear'],
+                'model__gamma': [1e-3, 1e-4],
+                'model__C': [1, 10, 100, 1000]
+            })
+        elif self.model == MODELS_RANDOM_FOREST:
+            params.update({
+
+            })
+        clf = GridSearchCV(self.get_pipeline(), params, cv=5,
+                           scoring='%s_macro' % self.training_param)
+        X = df.drop(["Value"], axis=1)
+        Y = df["Value"].values
+        clf.fit(X, Y)
+        print clf.best_params_
+        print clf.best_estimator_
+        print clf.best_score_
 
 
 
