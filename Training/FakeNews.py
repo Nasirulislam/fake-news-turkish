@@ -1,3 +1,4 @@
+from sklearn.linear_model import LogisticRegression
 import snowballstemmer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.ensemble import RandomForestClassifier
@@ -15,6 +16,7 @@ FEATURES_NGRAMS = "ngrams"
 
 MODELS_SVM = "svm"
 MODELS_RANDOM_FOREST = "random forest"
+MODELS_LOGISTIC_REGRESSION = "logistic regression"
 
 STEMMER_SNOWBALL = "snowball"
 STEMMER_ZEMBREK = "zembrek"
@@ -28,7 +30,8 @@ from urlparse import urlparse
 class TurkishFakeNewsClassifier:
     model_name_to_class = {
         MODELS_SVM: SVC(),
-        MODELS_RANDOM_FOREST: RandomForestClassifier()
+        MODELS_RANDOM_FOREST: RandomForestClassifier(),
+        MODELS_LOGISTIC_REGRESSION: LogisticRegression()
     }
 
     feature_name_to_class = {
@@ -114,9 +117,9 @@ class TurkishFakeNewsClassifier:
         params = {
             # check whether unigrams give good results or bigrams.
             "vectorizer__vectorizer": [self.feature_name_to_class[self.feature]],
-            "vectorizer__ngram_range": [(1,1), (2,2)],
+            "vectorizer__ngram_range": [(1,1)],
             # check pca parameters
-            "pca__n_components": [20, 25, 30, 50],
+            "pca__n_components": [30, 35],
             # stemmer to use for preprocessing
             "preprocessor__stemmer": [self.stemmer_name_to_method[self.stemmer_method]]
 
@@ -124,13 +127,18 @@ class TurkishFakeNewsClassifier:
         # select the tunable parameters according to the model
         if self.model == MODELS_SVM:
             params.update({
-                'model__kernel': ['rbf', 'linear'],
+                'model__kernel': ['linear'],
                 'model__gamma': [1e-3, 1e-4],
-                'model__C': [1, 10, 100, 1000]
+                'model__C': [0.5, 1, 10]
             })
         elif self.model == MODELS_RANDOM_FOREST:
             params.update({
-
+                'model__n_estimators': [5, 10, 15]
+            })
+        elif self.model == MODELS_LOGISTIC_REGRESSION:
+            params.update({
+                'model__C': [1.0, 10],
+                'model__tol': [0.001, 0.01, 0.1]
             })
         clf = GridSearchCV(self.get_pipeline(), params, cv=5,
                            scoring='%s_macro' % self.training_param)
@@ -138,7 +146,7 @@ class TurkishFakeNewsClassifier:
         Y = df["Value"].values
         clf.fit(X, Y)
         print clf.best_params_
-        print clf.best_estimator_
+        # print clf.best_estimator_
         print clf.best_score_
 
 
