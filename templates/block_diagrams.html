@@ -1,14 +1,14 @@
-{% extends "base.html" %}
+{% extends "index.html" %}
 
 {% block sidebar_elements%}
     <li>
         <a href="/about">About Project</a>
     </li>
     <li>
-        <a href="/papers">Papers</a>
+        <a href="/papers" >Papers</a>
     </li>
     <li>
-        <a href="/block_diagrams">Block Diagrams</a>
+        <a href="/block_diagrams" class="sidebar-active">Block Diagrams</a>
     </li>
     <li>
         <a href="/dataset">Dataset Info</a>
@@ -16,8 +16,8 @@
 {% endblock %}
 
 {% block container %}
-          <h1 class="mt-5">Update the page with contents</h1>
+          <h1 class="mt-5">Block diagram goes here</h1>
           <p>
-              Put block diagrams, paper links and dataset info etc.
+              Images
           </p>
 {%endblock%}

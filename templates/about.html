@@ -1,0 +1,23 @@
+{% extends "index.html" %}
+
+{% block sidebar_elements%}
+<li>
+        <a href="/about"  class="sidebar-active">About Project</a>
+    </li>
+    <li>
+        <a href="/papers">Papers</a>
+    </li>
+    <li>
+        <a href="/block_diagrams" >Block Diagrams</a>
+    </li>
+    <li>
+        <a href="/dataset">Dataset Info</a>
+    </li>
+{% endblock %}
+
+{% block container %}
+          <h1 class="mt-5">About project</h1>
+          <p>
+              Project description and a general outline of how to use it.
+          </p>
+{%endblock%}

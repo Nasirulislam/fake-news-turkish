@@ -21,11 +21,16 @@
         .nav-broad {
             padding-right: 4.5rem!important
         }
+        .sidebar-active {
+            color: #fff!important
+        }
     </style>
 
   </head>
 
   <body>
+  {% set active_page = active_page|default('home') -%}
+
     <!-- Bootstrap core JavaScript -->
     <script src="static/jquery/jquery.min.js"></script>
     <script src="static/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -57,15 +62,7 @@
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 {% block sidebar_elements%}
-                <li>
-                    <a href="#">Papers</a>
-                </li>
-                <li>
-                    <a href="#">Block Diagrams</a>
-                </li>
-                <li>
-                    <a href="#">Dataset Info</a>
-                </li>
+
                 {% endblock %}
             </ul>
         </div>
