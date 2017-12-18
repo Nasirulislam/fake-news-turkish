@@ -1,3 +1,4 @@
+import pandas
 from sklearn.base import BaseEstimator
 from slang_collections import *
 __author__ = 'pravesh'
@@ -30,8 +31,10 @@ class TurkishFeatureExtractor(BaseEstimator):
             X["true_suffix_count"] = X["NewsTitle"].str.count(true_suffix_regex) + X["News"].str.count(true_suffix_regex)
 
         if self.avg_sentences:
-            pass
+            X["sentences_count"] = X["News"].str.count(r"\.") + 1
 
         if self.punctuations:
-            pass
+            X["bang_count"] = X["NewsTitle"].str.count("!") + X["News"].str.count("!")
+            print X["bang_count"]
+            # print pandas.concat(X["bang_count"], axis=1)
         return X

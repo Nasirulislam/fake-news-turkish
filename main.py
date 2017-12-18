@@ -32,7 +32,8 @@ if __name__ == "__main__":
                                # 'vectorizer__sublinear_tf': True,
                                # 'vectorizer__smooth_idf': True
                                "extractor__slang": True,
-                               'extractor__suffixes': True
+                               'extractor__suffixes': True,
+                               'extractor__punctuations': True
                            })
     # classifier.plot_precision_recall(True)
 
