@@ -102,3 +102,5 @@ ENV/
 
 # Pycharm
 .idea/
+
+github_credentials

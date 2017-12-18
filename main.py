@@ -18,8 +18,27 @@ def read_file_csv(file_path):
 
 if __name__ == "__main__":
     df = read_file_csv("TDFFN.csv")
+    import random
+    random.seed(10)
+
+    classifier = TurkishFakeNewsClassifier(columns=["NewsDate", "Url", "NewsTitle", "News", "Value"],
+                                           model=MODELS_SVM, feature=FEATURES_TERM_FREQUENCY)
+    classifier.train(df,
+                           pipeline_params={
+                               "model__C": 10,
+                               'model__kernel': 'linear',
+                               'model__gamma': 0.001,
+                               'pca__n_components': 15,
+                               # 'vectorizer__sublinear_tf': True,
+                               # 'vectorizer__smooth_idf': True
+                               "extractor__slang": True,
+                               'extractor__suffixes': True
+                           })
+    # classifier.plot_precision_recall(True)
+
+    # precision, recall and f1 score for baseline
+    p_b, r_b, f_b = classifier.get_precision_recall_f1()
+    print p_b, r_b, f_b
 
     classifier = TurkishFakeNewsClassifier(columns=["NewsDate", "Url", "NewsTitle", "News", "Value"],
                                            model=MODELS_SVM)
-    print classifier.train(df, pipeline_params={"model__C": 1, 'model__kernel': 'linear', 'model__gamma': 0.001})
-    classifier.plot_precision_recall(True)

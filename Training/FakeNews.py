@@ -3,11 +3,12 @@ import snowballstemmer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from sklearn.metrics import precision_recall_curve, average_precision_score
+from sklearn.metrics import precision_recall_curve, average_precision_score, precision_score, recall_score, f1_score
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
 import pandas as pd
+from Utils.Extractor import TurkishFeatureExtractor
 from Utils.PreProcessor import TurkishPreprocessor
 from Utils.Vectorizer import TurkishVectorizer
 import matplotlib.pyplot as plt
@@ -46,7 +47,7 @@ class TurkishFakeNewsClassifier:
     }
 
     def __init__(self, columns, model=MODELS_SVM, feature=FEATURES_TERM_FREQUENCY, use_pca=True,
-                 training_param=PARAM_PRECISION, stemmer_method = STEMMER_SNOWBALL):
+                 training_param=PARAM_PRECISION, stemmer_method = STEMMER_SNOWBALL, random_state=0):
         """
 
         :param columns: Which training columns to use. Default all
@@ -61,9 +62,15 @@ class TurkishFakeNewsClassifier:
         self.use_pca = use_pca
         self.training_param = training_param
         self.stemmer_method = stemmer_method
+        self.random_state = random_state
 
     def get_test_train_split(self, df, test_size):
-        X_train, X_test, y_train, y_test = train_test_split(df.drop(["Value"], axis=1), df["Value"], test_size=test_size, random_state = 0)
+        X_train, X_test, y_train, y_test = train_test_split(
+            df.drop(["Value"], axis=1),
+            df["Value"],
+            test_size=test_size,
+            random_state=1,
+            stratify=df["Value"])
         return X_train, X_test, y_train, y_test
 
     def plot_or_save(self, plt, save_image, file_name):
@@ -72,6 +79,13 @@ class TurkishFakeNewsClassifier:
         else:
             # save this plot
             plt.savefig("static/plots/%s" % file_name)
+
+    def get_precision_recall_f1(self):
+        assert hasattr(self, "y_test") and hasattr(self, "y_score"), "Call this function only after train has been called"
+        precision = precision_score(self.y_test, self.y_pred)
+        recall = recall_score(self.y_test, self.y_pred)
+        f1 = f1_score(self.y_test, self.y_pred)
+        return precision, recall, f1
 
     def plot_precision_recall(self, save_img=False, file_name="pr_plot.png"):
         assert hasattr(self, "y_test") and hasattr(self, "y_score"), "Call this function only after train has been called"
@@ -92,7 +106,7 @@ class TurkishFakeNewsClassifier:
         self.plot_or_save(plt, save_img, file_name)
 
 
-    def train(self, X, test_size=0.3, pipeline_params=None):
+    def train(self, X, test_size=0.3, pipeline_params=None, threshold=0.5):
         """
         Automatically split training data and test data and present the results in the form of a dictionary.
         :param test_size: How much data to use for train and test. 0.3 default means that 30% used for test, 70% for train.
@@ -114,6 +128,8 @@ class TurkishFakeNewsClassifier:
         self.y_test = y_test
         self.y_score = y_scores
         self.y_pred = self.pipeline.predict(X_test)
+        # self.y_pred = self.pipeline.predict_proba(X_test)
+        # self.y_pred = self.y_pred[:, 1] > threshold
 
     def fit(self, X):
         # Extract columns
@@ -157,11 +173,13 @@ class TurkishFakeNewsClassifier:
         if hasattr(self, "pipeline"):
             return self.pipeline
         steps = [
+            # before preprocessor, comes the feature extractor
+            ('extractor', TurkishFeatureExtractor()),
             # first the pre-processor
             ("preprocessor", TurkishPreprocessor(self.stemmer_name_to_method[self.stemmer_method])),
             ("vectorizer", TurkishVectorizer(self.feature_name_to_class[self.feature])),
             # use pca
-            ("pca", TruncatedSVD(n_iter=10)),
+            ("pca", TruncatedSVD(n_components=20, n_iter=10)),
             ("model", self.model_name_to_class[self.model])
         ]
         self.pipeline = Pipeline(steps)
