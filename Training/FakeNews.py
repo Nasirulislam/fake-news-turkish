@@ -66,7 +66,14 @@ class TurkishFakeNewsClassifier:
         X_train, X_test, y_train, y_test = train_test_split(df.drop(["Value"], axis=1), df["Value"], test_size=test_size, random_state = 0)
         return X_train, X_test, y_train, y_test
 
-    def plot_precision_recall(self, save_img=False, file_name="pr_plot"):
+    def plot_or_save(self, plt, save_image, file_name):
+        if not save_image:
+            plt.show()
+        else:
+            # save this plot
+            plt.savefig("static/plots/%s" % file_name)
+
+    def plot_precision_recall(self, save_img=False, file_name="pr_plot.png"):
         assert hasattr(self, "y_test") and hasattr(self, "y_score"), "Call this function only after train has been called"
         precision, recall, _ = precision_recall_curve(self.y_test, self.y_score)
 
@@ -79,11 +86,10 @@ class TurkishFakeNewsClassifier:
         plt.ylabel('Precision')
         plt.ylim([0.0, 1.05])
         plt.xlim([0.0, 1.0])
-        # todo change this
         average_precision = average_precision_score(self.y_test, self.y_score)
         plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(
             average_precision))
-        plt.show()
+        self.plot_or_save(plt, save_img, file_name)
 
 
     def train(self, X, test_size=0.3, pipeline_params=None):
@@ -107,6 +113,7 @@ class TurkishFakeNewsClassifier:
         y_scores = self.pipeline.decision_function(X_test)
         self.y_test = y_test
         self.y_score = y_scores
+        self.y_pred = self.pipeline.predict(X_test)
 
     def fit(self, X):
         # Extract columns
