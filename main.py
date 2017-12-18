@@ -20,5 +20,6 @@ if __name__ == "__main__":
     df = read_file_csv("TDFFN.csv")
 
     classifier = TurkishFakeNewsClassifier(columns=["NewsDate", "Url", "NewsTitle", "News", "Value"],
-                                           model=MODELS_LOGISTIC_REGRESSION)
-    fitted = classifier.select_best_model(df)
+                                           model=MODELS_SVM)
+    print classifier.train(df, pipeline_params={"model__C": 1, 'model__kernel': 'linear', 'model__gamma': 0.001})
+    classifier.plot_precision_recall(True)
