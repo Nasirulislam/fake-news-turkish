@@ -2,6 +2,7 @@
 """
 Fake news detector for Turkish language
 """
+from sklearn.feature_selection import SelectKBest
 
 from Training.FakeNews import *
 
@@ -18,6 +19,7 @@ def read_file_csv(file_path):
 
 if __name__ == "__main__":
     df = read_file_csv("TDFFN.csv")
+
     import random
     random.seed(10)
 
@@ -28,18 +30,21 @@ if __name__ == "__main__":
                                "model__C": 10,
                                'model__kernel': 'linear',
                                'model__gamma': 0.001,
-                               'pca__n_components': 15,
+                               'adder__n_components': 30,
+                               'adder__n_iter': 10,
                                # 'vectorizer__sublinear_tf': True,
-                               # 'vectorizer__smooth_idf': True
+                               # 'vectorizer__smooth_idf': True,
+                               'vectorizer__ngram_range' : (1,2),
                                "extractor__slang": True,
-                               'extractor__suffixes': True,
-                               'extractor__punctuations': True
+                               # 'extractor__suffixes': True,
+                               # 'extractor__sentences_count': True,
+                               # 'extractor__punctuations': True
                            })
     # classifier.plot_precision_recall(True)
 
     # precision, recall and f1 score for baseline
     p_b, r_b, f_b = classifier.get_precision_recall_f1()
     print p_b, r_b, f_b
-
-    classifier = TurkishFakeNewsClassifier(columns=["NewsDate", "Url", "NewsTitle", "News", "Value"],
-                                           model=MODELS_SVM)
+    #
+    # classifier = TurkishFakeNewsClassifier(columns=["NewsDate", "Url", "NewsTitle", "News", "Value"],
+    #                                        model=MODELS_SVM)

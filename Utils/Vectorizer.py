@@ -10,16 +10,16 @@ class TurkishVectorizer:
 
     def fit(self, df, y=None):
         corpus = list(df["NewsTitle"].str.split()) + list(df["News"].str.split())
-        corpus = reduce(list.__add__, corpus)
-        self.vectorizer.vocabulary = set(corpus)
+        # corpus = reduce(list.__add__, corpus)
+        # self.vectorizer.vocabulary = set(corpus)
         self.vectorizer.fit(pd.concat([df["NewsTitle"], df["News"]]))
         return self
 
     def transform(self, df, y=None):
         news_title_sparse = self.vectorizer.transform(df["NewsTitle"])
         news_sparse = self.vectorizer.transform(df["News"])
-        X = sp.sparse.hstack((news_title_sparse, news_sparse), format='csr')
-        return normalize(X)
+        setattr(df, "__X", sp.sparse.hstack((news_title_sparse, news_sparse), format='csr'))
+        return df
 
     def get_params(self, deep=True):
         return {"vectorizer": self.vectorizer}

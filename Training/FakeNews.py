@@ -9,6 +9,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
 import pandas as pd
 from Utils.Extractor import TurkishFeatureExtractor
+from Utils.FeatureAdder import TurkishFeatureAdder
 from Utils.PreProcessor import TurkishPreprocessor
 from Utils.Vectorizer import TurkishVectorizer
 import matplotlib.pyplot as plt
@@ -158,8 +159,8 @@ class TurkishFakeNewsClassifier:
 
         if "Value" in self.columns:
             # transform Value from FAKE / TRUE to True and False depending if the news is true or fake
-            df.loc[df["Value"] == "FAKE", "Value"] = 0
-            df.loc[df["Value"] == "TRUE", "Value"] = 1
+            df.loc[df["Value"] == "FAKE", "Value"] = 1
+            df.loc[df["Value"] == "TRUE", "Value"] = 0
         df["Value"] = df["Value"].astype('int')
         # Todo add other features here
         return df
@@ -179,7 +180,8 @@ class TurkishFakeNewsClassifier:
             ("preprocessor", TurkishPreprocessor(self.stemmer_name_to_method[self.stemmer_method])),
             ("vectorizer", TurkishVectorizer(self.feature_name_to_class[self.feature])),
             # use pca
-            ("pca", TruncatedSVD(n_components=20, n_iter=10)),
+            # ("pca", TruncatedSVD(n_components=20, n_iter=10)),
+            ("adder", TurkishFeatureAdder(n_components=20, n_iter=10)),
             ("model", self.model_name_to_class[self.model])
         ]
         self.pipeline = Pipeline(steps)
