@@ -97,10 +97,10 @@ class TurkishFakeNewsClassifier:
         assert hasattr(self, "y_test") and hasattr(self, "y_score"), "Call this function only after train has been called"
         precision, recall, _ = precision_recall_curve(self.y_test, self.y_score)
 
-        plt.step(recall, precision, color='b', alpha=0.2,
+        plt.step(recall, precision, color='b' , # alpha=0.2,
                  where='post')
-        plt.fill_between(recall, precision, step='post', alpha=0.2,
-                         color='b')
+        # plt.fill_between(recall, precision, step='post', alpha=0.2,
+        #                  color='b')
 
         plt.xlabel('Recall')
         plt.ylabel('Precision')

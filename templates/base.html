@@ -40,6 +40,7 @@
       <div class="container">
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
+              {% block navbar %}
             <li class="nav-item active">
               <a class="nav-link nav-broad" href="#">Home
                 <span class="sr-only">(current)</span>
@@ -51,6 +52,7 @@
             <li class="nav-item nav-broad">
               <a class="nav-link" href="#">News Data Collection</a>
             </li>
+              {% endblock %}
           </ul>
         </div>
       </div>

@@ -15,6 +15,24 @@
     </li>
 {% endblock %}
 
+{ % block navbar %}
+        {% block navbar %}
+            <li class="nav-item">
+              <a class="nav-link nav-broad" href="/">Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item nav-broad active">
+              <a class="nav-link" href="/svm">Train & Test</a>
+            </li>
+            <li class="nav-item nav-broad">
+              <a class="nav-link" href="#">News Data Collection</a>
+            </li>
+              {% endblock %}
+{ % endblock %}
+
+
+
 {% block container %}
           <h1 class="mt-5">Update the page with contents</h1>
           <p>
