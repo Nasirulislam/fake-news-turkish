@@ -5,6 +5,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.metrics import precision_recall_curve, average_precision_score, precision_score, recall_score, f1_score
 from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
 import pandas as pd
@@ -21,6 +22,7 @@ FEATURES_NGRAMS = "ngrams"
 MODELS_SVM = "svm"
 MODELS_RANDOM_FOREST = "random forest"
 MODELS_LOGISTIC_REGRESSION = "logistic regression"
+MODELS_NAIVE_BAYES = "Naive Bayes"
 
 STEMMER_SNOWBALL = "snowball"
 STEMMER_ZEMBREK = "zembrek"
@@ -35,7 +37,8 @@ class TurkishFakeNewsClassifier:
     model_name_to_class = {
         MODELS_SVM: SVC(),
         MODELS_RANDOM_FOREST: RandomForestClassifier(),
-        MODELS_LOGISTIC_REGRESSION: LogisticRegression()
+        MODELS_LOGISTIC_REGRESSION: LogisticRegression(),
+        MODELS_NAIVE_BAYES: MultinomialNB()
     }
 
     feature_name_to_class = {
@@ -88,7 +91,7 @@ class TurkishFakeNewsClassifier:
         f1 = f1_score(self.y_test, self.y_pred)
         return precision, recall, f1
 
-    def plot_precision_recall(self, save_img=False, file_name="pr_plot.png"):
+    def plot_precision_recall(self, save_img=False, file_name="pr_rc_plot.png"):
         assert hasattr(self, "y_test") and hasattr(self, "y_score"), "Call this function only after train has been called"
         precision, recall, _ = precision_recall_curve(self.y_test, self.y_score)
 
