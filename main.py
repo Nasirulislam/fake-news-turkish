@@ -77,7 +77,8 @@ if __name__ == "__main__":
     classifier = get_baseline_svm()
     classifier.plot_precision_recall(True, "pr_rc_plot.png")
     classifier.plot_roc(True, "roc_svm.png")
-
+    classifier.plot_precision_recall_f1_table("SVM(baseline)", file_name="pr_rc_table_svm.png")
+    bsvm = classifier
     # precision, recall and f1 score for baseline
     p_b, r_b, f_b = classifier.get_precision_recall_f1()
     print p_b, r_b, f_b
@@ -87,7 +88,8 @@ if __name__ == "__main__":
     classifier = get_baseline_nb()
     classifier.plot_precision_recall(True, file_name="pr_rc_nb.png")
     classifier.plot_roc(True, "roc_nb.png")
-
+    classifier.plot_precision_recall_f1_table("NB(baseline)", file_name="pr_rc_table_nb.png")
+    bnb = classifier
     # precision, recall and f1 score for baseline
     p_b, r_b, f_b = classifier.get_precision_recall_f1()
     print p_b, r_b, f_b
@@ -96,6 +98,8 @@ if __name__ == "__main__":
     classifier = get_all_svm()
     classifier.plot_precision_recall(True, file_name="pr_rc_svm_all.png")
     classifier.plot_roc(True, "roc_svm_all.png")
+    classifier.plot_precision_recall_f1_table("SVM(all)", file_name="pr_rc_table_svm_all.png")
+    asvm = classifier
 
     # precision, recall and f1 score for baseline
     p_b, r_b, f_b = classifier.get_precision_recall_f1()
@@ -105,7 +109,16 @@ if __name__ == "__main__":
     classifier = get_all_nb()
     classifier.plot_precision_recall(True, file_name="pr_rc_nb_all.png")
     classifier.plot_roc(True, "roc_nb_all.png")
-
+    classifier.plot_precision_recall_f1_table("NB(all)", file_name="pr_rc_table_nb_all.png")
+    anb = classifier
     # precision, recall and f1 score for baseline
     p_b, r_b, f_b = classifier.get_precision_recall_f1()
     print p_b, r_b, f_b
+
+    df = pd.concat([bsvm._get_precision_recall_f1_df(),
+                    bnb._get_precision_recall_f1_df(),
+                    asvm._get_precision_recall_f1_df(),
+                    anb._get_precision_recall_f1_df()])
+    print df.head()
+    classifier.plot_precision_recall_f1_table(description=["SVM (baseline)", "NB (baseline)", "SVM (all features)", "NB (all features)"],
+                                              df=df, file_name="comparison.png")

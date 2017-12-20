@@ -1,3 +1,4 @@
+from pandas.plotting import table
 from sklearn.linear_model import LogisticRegression
 import snowballstemmer
 from sklearn.decomposition import TruncatedSVD
@@ -74,7 +75,7 @@ class TurkishFakeNewsClassifier:
             df.drop(["Value"], axis=1),
             df["Value"],
             test_size=test_size,
-            random_state=1,
+            random_state=11,
             stratify=df["Value"])
         return X_train, X_test, y_train, y_test
 
@@ -83,7 +84,7 @@ class TurkishFakeNewsClassifier:
             plt.show()
         else:
             # save this plot
-            plt.savefig("static/plots/%s" % file_name)
+            plt.savefig("static/plots/%s" % file_name, bbox_inches='tight')
 
     def get_precision_recall_f1(self):
         assert hasattr(self, "y_test") and hasattr(self, "y_score"), "Call this function only after train has been called"
@@ -91,6 +92,29 @@ class TurkishFakeNewsClassifier:
         recall = recall_score(self.y_test, self.y_pred)
         f1 = f1_score(self.y_test, self.y_pred)
         return precision, recall, f1
+
+
+    def _get_precision_recall_f1_df(self):
+        precision, recall, f1 = self.get_precision_recall_f1()
+        return pd.DataFrame(data={
+            "Precision": ["%.2f" % precision],
+            "Recall": ["%.2f" % recall],
+            "F1-Score": ["%.2f" % f1],
+        }, columns=["Precision", "Recall", "F1-Score"])
+
+    def plot_precision_recall_f1_table(self, description=None, df=None, save_image=True, file_name="precision_recall.png"):
+        if df is None:
+            df = self._get_precision_recall_f1_df()
+        plt.figure()
+        ax = plt.subplot(111, frame_on=False) # no visible frame
+        ax.xaxis.set_visible(False)  # hide the x axis
+        ax.yaxis.set_visible(False)  # hide the y axis
+        if not isinstance(description, list):
+            description = [description]
+        table(ax, df, description)  # where df is your data frame
+
+        self.plot_or_save(plt, save_image, file_name)
+
 
     def plot_precision_recall(self, save_img=False, file_name="pr_rc_plot.png"):
         plt.figure()

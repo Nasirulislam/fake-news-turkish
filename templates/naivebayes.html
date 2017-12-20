@@ -50,5 +50,68 @@
 
 <img src="/static/plots/pr_rc_nb.png">
 
+
+
+
+        <p>
+<h2>Precision / Recall / F1-Score</h2>
+<div class="top-crop">
+    <img src="/static/plots/pr_rc_table_nb.png" alt="" style="margin-top: -350px"/>
+</div>
+
+
+
+
+<h1 class="mt-5">Naive with additional features</h1>
+<p>
+    Chosen Features:
+<ul>
+    <li>
+        70% data taken for training and 30% for testing.
+    </li>
+    <li>
+        Term Frequency method was chosen to vectorize the news headline and news body
+    </li>
+    <li>
+        Latent Semantic Analysis done to reduce the dimension of the feature vector to 30 dimensions preserving 93% of the variance.
+    </li>
+    <li>
+        Number of slang words used.
+    </li>
+    <li>
+        Number of punctuations (exclamations)
+    </li>
+    <li>
+        Fake / True suffixes.
+    </li>
+</ul>
+</p>
+<p>
+    Chosen parameters from cross validation (5-fold):
+<ul>
+    <li>Alpha: 1</li>
+
+</ul>
+
+<h1 class="mt-5">Graphs</h1>
+
+
+<h2>Receiver Operating Characteristics (ROC)</h2>
+
+<img src="/static/plots/roc_nb_all.png">
+
+<p>
+
+<h2>Average precision</h2>
+
+<img src="/static/plots/pr_rc_nb_all.png">
+
+        <p>
+<h2>Precision / Recall / F1-Score</h2>
+<div class="top-crop">
+    <img src="/static/plots/pr_rc_table_nb_all.png" alt="" style="margin-top: -350px"/>
+</div>
+
+
 </p>
 {%endblock%}

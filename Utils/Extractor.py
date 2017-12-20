@@ -25,7 +25,7 @@ class TurkishFeatureExtractor(BaseEstimator):
         # transform the given data frame.. concretely, add new columns with the features
         if self.slang:
             X["slangs"] = X["NewsTitle"].str.count(slang_regex) + X["News"].str.count(slang_regex)
-            print zip(self.y_values, X["slangs"].values)
+            # print zip(self.y_values, X["slangs"].values)
 
         if self.suffixes:
             X["fake_suffix_count"] = X["NewsTitle"].str.count(fake_suffix_regex) + X["News"].str.count(fake_suffix_regex)

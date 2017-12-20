@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block sidebar_elements%}
+    <li>
+        <a href="/naivebayes">Naive Bayes</a>
+    </li>
+    <li>
+        <a href="/svm">SVM</a>
+    </li>
+    <li>
+        <a href="/comparison" class="sidebar-active">Comparisons</a>
+    </li>
+    <li>
+        <a href="/classify">Classify a News</a>
+    </li>
+{% endblock %}
+
+
+{% block container %}
+          <h1 class="mt-5">Comparison</h1>
+          <h3 class="mt-5">Table showing the differences between the baseline and other different models.</h3>
+          <p>
+              <div class="top-crop">
+                <img src="/static/plots/comparison.png" style="margin-top: -350px">
+              </div>
+          </p>
+{%endblock%}

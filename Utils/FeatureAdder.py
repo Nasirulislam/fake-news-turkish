@@ -29,7 +29,7 @@ class TurkishFeatureAdder(BaseEstimator):
                 combined_feature.append(X[[features]])
 
 
-        print "Captured variance is %.2f" % self.pca.explained_variance_ratio_.sum()
+        # print "Captured variance is %.2f" % self.pca.explained_variance_ratio_.sum()
         # stack them together
         result = MinMaxScaler().fit_transform(numpy.hstack(combined_feature))
         return result
