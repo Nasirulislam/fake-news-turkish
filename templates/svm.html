@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block sidebar_elements%}
+<li>
+    <a href="/naivebayes">Naive Bayes</a>
+</li>
+<li>
+    <a href="/svm" class="sidebar-active">SVM</a>
+</li>
+<li>
+    <a href="/comparison">Comparisons</a>
+</li>
+<li>
+    <a href="/classify">Classify a News</a>
+</li>
+{% endblock %}
+
+{% block container %}
+<h1 class="mt-5">SVM baseline</h1>
+<p>
+    Chosen Features for <b>baseline</b>:
+<ul>
+    <li>
+        70% data taken for training and 30% for testing.
+    </li>
+    <li>
+        Term Frequency method was chosen to vectorize the news headline and news body
+    </li>
+    <li>
+        Latent Semantic Analysis done to reduce the dimension of the feature vector to 30 dimensions preserving 93% of the variance.
+    </li>
+</ul>
+</p>
+<p>
+    Chosen parameters from cross validation (5-fold):
+<ul>
+    <li>C: 10</li>
+    <li>Kernel: Linear</li>
+
+</ul>
+
+<h1 class="mt-5">Graphs</h1>
+
+<h2>Average precision</h2>
+
+<img src="/static/plots/pr_rc_plot.png">
+</p>
+{%endblock%}
