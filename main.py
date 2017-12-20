@@ -67,13 +67,31 @@ def get_all_nb():
                            'extractor__punctuations': True
                            })
     return classifier
-
+#
+def random_classifier():
+    classifier = TurkishFakeNewsClassifier(columns=["NewsDate", "Url", "NewsTitle", "News", "Value"],
+                                           model=MODELS_LOGISTIC_REGRESSION, feature=FEATURES_TERM_FREQUENCY)
+    pipeline_params={
+                         "model__tol": 0.001,
+                         'adder__n_components': 25, # Latent Semantic Analysis
+                         'adder__n_iter': 10,
+                         #"extractor__slang": True,
+                          #'extractor__suffixes': True,
+                          #'extractor__sentences_count': True,
+                          'extractor__punctuations': True
+    }
+    classifier.train(df, pipeline_params=pipeline_params, test_size=0.25)
+    return classifier
+#
 if __name__ == "__main__":
+    #
     df = read_file_csv("TDFFN.csv")
 
-    # import random
-    # random.seed(10)
-
+    #rc = random_classifier()
+    #rc.plot_roc()
+    #rc.plot_precision_recall_f1_table(save_image=False, description="logisitc regression")
+    #exit()
+    #
     classifier = get_baseline_svm()
     classifier.plot_precision_recall(True, "pr_rc_plot.png")
     classifier.plot_roc(True, "roc_svm.png")

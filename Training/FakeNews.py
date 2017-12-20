@@ -247,11 +247,12 @@ class TurkishFakeNewsClassifier:
         params = {
             # check whether unigrams give good results or bigrams.
             "vectorizer__vectorizer": [self.feature_name_to_class[self.feature]],
-            "vectorizer__ngram_range": [(1,1)],
+            "vectorizer__ngram_range": [(1,1), (1,2), (2,2)],
             # check pca parameters
             "pca__n_components": [30, 40, 50],
             # stemmer to use for preprocessing
-            "preprocessor__stemmer": [self.stemmer_name_to_method[self.stemmer_method]]
+            "preprocessor__stemmer": [self.stemmer_name_to_method[self.stemmer_method]],
+            'extractor__punctuations': [True, False]
 
         }
         # select the tunable parameters according to the model
