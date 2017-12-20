@@ -2,10 +2,10 @@
 
 {% block sidebar_elements%}
 <li>
-    <a href="/naivebayes">Naive Bayes</a>
+    <a href="/naivebayes" class="sidebar-active">Naive Bayes</a>
 </li>
 <li>
-    <a href="/svm" class="sidebar-active">SVM</a>
+    <a href="/svm">SVM</a>
 </li>
 <li>
     <a href="/comparison">Comparisons</a>
@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block container %}
-<h1 class="mt-5">SVM baseline</h1>
+<h1 class="mt-5">Naive Bayes baseline</h1>
 <p>
     Chosen Features for <b>baseline</b>:
 <ul>
@@ -41,15 +41,15 @@
 
 <h1 class="mt-5">Graphs</h1>
 
-
 <h2>Receiver Operating Characteristics (ROC)</h2>
 
-<img src="/static/plots/roc_svm.png">
+<img src="/static/plots/roc_nb.png">
 
 <p>
 
 <h2>Average precision</h2>
 
-<img src="/static/plots/pr_rc_plot.png">
+<img src="/static/plots/pr_rc_nb.png">
+
 </p>
 {%endblock%}

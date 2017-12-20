@@ -3,7 +3,8 @@ import snowballstemmer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from sklearn.metrics import precision_recall_curve, average_precision_score, precision_score, recall_score, f1_score
+from sklearn.metrics import precision_recall_curve, average_precision_score, precision_score, recall_score, f1_score, \
+    roc_curve, auc
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
@@ -92,6 +93,7 @@ class TurkishFakeNewsClassifier:
         return precision, recall, f1
 
     def plot_precision_recall(self, save_img=False, file_name="pr_rc_plot.png"):
+        plt.figure()
         assert hasattr(self, "y_test") and hasattr(self, "y_score"), "Call this function only after train has been called"
         precision, recall, _ = precision_recall_curve(self.y_test, self.y_score)
 
@@ -107,6 +109,26 @@ class TurkishFakeNewsClassifier:
         average_precision = average_precision_score(self.y_test, self.y_score)
         plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(
             average_precision))
+        self.plot_or_save(plt, save_img, file_name)
+
+    def plot_roc(self, save_img=False, file_name="roc.png"):
+        plt.figure()
+        assert hasattr(self, "y_test") and hasattr(self, "y_score"), "Call this function only after train has been called"
+
+        fpr, tpr, _ = roc_curve(self.y_test, self.y_score,
+                                      pos_label=1)
+        roc_auc = auc(fpr, tpr)
+
+        lw = 2
+        plt.plot(fpr, tpr, color='darkorange',
+                 lw=lw, label='ROC curve (area = %0.2f)' % roc_auc)
+        plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+        plt.xlim([0.0, 1.0])
+        plt.ylim([0.0, 1.05])
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title('Receiver operating characteristic example')
+        plt.legend(loc="lower right")
         self.plot_or_save(plt, save_img, file_name)
 
 
@@ -128,7 +150,10 @@ class TurkishFakeNewsClassifier:
         # now calculate scores.
         accuracy = self.pipeline.score(X_test, y_test)
         print "Accuracy %f" % accuracy
-        y_scores = self.pipeline.decision_function(X_test)
+        if hasattr(self.pipeline, "decision_function") and callable(self.pipeline.decision_function):
+            y_scores = self.pipeline.decision_function(X_test)
+        else:
+            y_scores = self.pipeline.predict_proba(X_test)[:, 1]
         self.y_test = y_test
         self.y_score = y_scores
         self.y_pred = self.pipeline.predict(X_test)

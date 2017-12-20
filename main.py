@@ -33,12 +33,13 @@ if __name__ == "__main__":
                                # 'vectorizer__sublinear_tf': True,
                                # 'vectorizer__smooth_idf': True,
                                # 'vectorizer__ngram_range' : (1,2),
-                               # "extractor__slang": True,
-                               # 'extractor__suffixes': True,
+                               "extractor__slang": True,
+                               'extractor__suffixes': True,
                                # 'extractor__sentences_count': True,
                                # 'extractor__punctuations': True
                            })
-    classifier.plot_precision_recall(True)
+    classifier.plot_precision_recall(True, "pr_rc_plot.png")
+    classifier.plot_roc(True, "roc_svm.png")
 
     # precision, recall and f1 score for baseline
     p_b, r_b, f_b = classifier.get_precision_recall_f1()
@@ -57,12 +58,13 @@ if __name__ == "__main__":
                          # 'vectorizer__sublinear_tf': True,
                          # 'vectorizer__smooth_idf': True,
                          # 'vectorizer__ngram_range' : (1,2),
-                         # "extractor__slang": True,
-                         # 'extractor__suffixes': True,
+                         "extractor__slang": True,
+                         'extractor__suffixes': True,
                          # 'extractor__sentences_count': True,
                          # 'extractor__punctuations': True
                      })
-    classifier.plot_precision_recall(True)
+    classifier.plot_precision_recall(True, file_name="pr_rc_nb.png")
+    classifier.plot_roc(True, "roc_nb.png")
 
     # precision, recall and f1 score for baseline
     p_b, r_b, f_b = classifier.get_precision_recall_f1()

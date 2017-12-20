@@ -11,3 +11,4 @@ six==1.11.0
 sklearn
 snowballstemmer==1.2.1
 web.py==0.38
+matplotlib
